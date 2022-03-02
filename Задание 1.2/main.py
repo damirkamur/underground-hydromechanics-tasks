@@ -25,7 +25,7 @@ def define_type_x(xx):
 
 
 # Разбиение минимальной зоны
-N_min = 5
+N_min = 1
 
 # Кол-во зон и их границы
 with open('zone_info.txt', 'r') as file:
@@ -79,16 +79,25 @@ A[ec][xs - 1] = 1
 ec += 1
 
 A[ec][xs] = 1
-A[ec][0] = -1 / h[0]
-A[ec][1] = 1 / h[0]
+A[ec][0] = -f[0] / h[0]
+A[ec][1] = f[0] / h[0]
 ec += 1
 
 A[ec][2 * xs - 1] = 1
-A[ec][xs - 2] = -1 / h[xs - 2]
-A[ec][xs - 1] = 1 / h[xs - 2]
+A[ec][xs - 2] = -f[xs - 2] / h[xs - 2]
+A[ec][xs - 1] = f[xs - 2] / h[xs - 2]
 ec += 1
 
-# TODO условия равенства давлений и скоростей фильтрации
+for i in range(xs):
+    if type_x[i] == 'knot':
+        A[ec][i - 1] = -f[i - 1] / h[i - 1]
+        A[ec][i + 1] = -f[i] / h[i]
+        A[ec][i] = - A[ec][i - 1] - A[ec][i + 1]
+        A[ec + len(zone_coordinates) - 2][i - 1] = -1
+        A[ec + len(zone_coordinates) - 2][i + 1] = 1
+        A[ec + len(zone_coordinates) - 2][xs + i] = h[i] / f[i] + h[i - 1] / f[i - 1]
+
+        ec += 1
 
 # вывод результатов
 p_u = np.linalg.solve(A, b)
