@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-task_number = 2
+task_number = 1
 
 
 def p_analit_1(x):
@@ -21,7 +21,7 @@ def u_analit_2(x):
 
 
 def p_analit_3(x):
-    return 2 / 11 * x + 1 if x < 0.75 else -38 / 11 * x + 38 / 11
+    return -2 / 11 * x + 1 if x < 0.75 else -38 / 11 * x + 38 / 11
 
 
 def u_analit_3(x):
@@ -51,7 +51,7 @@ def define_type_x(xx):
 
 
 # Разбиение минимальной зоны
-N_min = 5
+N_min = 2
 
 # Кол-во зон и их границы
 with open('zone_info.txt', 'r') as file:
@@ -153,6 +153,8 @@ plt.ylabel('p')
 plt.minorticks_on()
 plt.grid(which='major', linewidth=1)
 plt.grid(which='minor', linestyle=':')
+plt.grid(which='minor', linestyle=':')
+plt.ylim([-0.1, 1.1])
 name_p_file = f'Функция давления (задание {task_number}).png'
 plt.savefig(name_p_file, dpi=300)
 
@@ -167,5 +169,7 @@ plt.ylabel('u')
 plt.minorticks_on()
 plt.grid(which='major', linewidth=1)
 plt.grid(which='minor', linestyle=':')
+plt.grid(which='minor', linestyle=':')
+plt.ylim([-0.1, 1.1])
 name_u_file = f'Функция скорости фильтрации (задание {task_number}).png'
 plt.savefig(name_u_file, dpi=300)

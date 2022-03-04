@@ -66,6 +66,7 @@ plt.ylabel('p')
 plt.minorticks_on()
 plt.grid(which='major', linewidth=1)
 plt.grid(which='minor', linestyle=':')
+plt.ylim([-0.1, 1.1])
 plt.savefig('Функция давления.png', dpi=300)
 
 plt.figure(2)
@@ -79,6 +80,8 @@ plt.ylabel('u')
 plt.minorticks_on()
 plt.grid(which='major', linewidth=1)
 plt.grid(which='minor', linestyle=':')
+plt.grid(which='minor', linestyle=':')
+plt.ylim([-0.1, 1.1])
 plt.savefig('Функция скорости фильтрации.png', dpi=300)
 
 # Перерасчет на реальные величины
