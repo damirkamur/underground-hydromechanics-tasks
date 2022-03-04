@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-task_number = 1
+task_number = 2
 
 
 def p_analit_1(x):
@@ -13,19 +13,19 @@ def u_analit_1(x):
 
 
 def p_analit_2(x):
-    return 1 - x
+    return 1 - 2 / 11 * x if x < 0.5 else 20 / 11 - 20 / 11 * x
 
 
 def u_analit_2(x):
-    return 1
+    return 2 / 11
 
 
 def p_analit_3(x):
-    return 1 - x
+    return 2 / 11 * x + 1 if x < 0.75 else -38 / 11 * x + 38 / 11
 
 
 def u_analit_3(x):
-    return 1
+    return 2 / 11
 
 
 def define_zone_num(xx):
