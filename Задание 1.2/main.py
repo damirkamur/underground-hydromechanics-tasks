@@ -2,6 +2,14 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+def p_analit_1(x):
+    return 1 - x
+
+
+def u_analit_1(x):
+    return 1
+
+
 def define_zone_num(xx):
     zone_num = 0
     for j in range(NN, 0, -1):
@@ -25,7 +33,7 @@ def define_type_x(xx):
 
 
 # Разбиение минимальной зоны
-N_min = 1
+N_min = 5
 
 # Кол-во зон и их границы
 with open('zone_info.txt', 'r') as file:
@@ -104,12 +112,15 @@ p_u = np.linalg.solve(A, b)
 p = p_u[:xs]
 u = p_u[xs:]
 
+p_an = [p_analit_1(x[i]) for i in range(xs)]
+u_an = [u_analit_1(x[i]) for i in range(xs)]
+
 plt.figure(1)
-plt.plot(x, p, 'r')
+plt.plot(x, p_an, 'b', x, p, 'r--')
 plt.title('Функция давления')
 plt.minorticks_on()
 plt.grid()
-plt.legend('Численное решение')
+plt.legend(('Точное решение', 'Численное решение'))
 plt.xlabel('x')
 plt.ylabel('p')
 plt.minorticks_on()
@@ -119,11 +130,11 @@ plt.grid(which='minor', linestyle=':')
 plt.show()
 
 plt.figure(2)
-plt.plot(x, u, 'r')
+plt.plot(x, u_an, 'b', x, u, 'r--')
 plt.title('Функция скорости фильтрации')
 plt.minorticks_on()
 plt.grid()
-plt.legend('Численное решение')
+plt.legend(('Точное решение', 'Численное решение'))
 plt.xlabel('x')
 plt.ylabel('u')
 plt.minorticks_on()
