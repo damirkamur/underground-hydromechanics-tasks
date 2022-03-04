@@ -1,7 +1,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from math import sqrt
 
-task_number = 1
+task_number = 3
 
 
 def p_analit_1(x):
@@ -51,7 +52,7 @@ def define_type_x(xx):
 
 
 # Разбиение минимальной зоны
-N_min = 2
+N_min = 5
 
 # Кол-во зон и их границы
 with open('zone_info.txt', 'r') as file:
@@ -142,6 +143,9 @@ elif task_number == 3:
     p_an = [p_analit_3(x[i]) for i in range(xs)]
     u_an = [u_analit_3(x[i]) for i in range(xs)]
 
+# Расчет невязки
+E = sqrt(sum([(p[i] - p_an[i]) ** 2 for i in range(xs)]) / xs)
+
 plt.figure(1)
 plt.plot(x, p_an, 'b', x, p, 'r--')
 plt.title('Функция давления')
@@ -156,7 +160,10 @@ plt.grid(which='minor', linestyle=':')
 plt.grid(which='minor', linestyle=':')
 plt.ylim([-0.1, 1.1])
 name_p_file = f'Функция давления (задание {task_number}).png'
-plt.savefig(name_p_file, dpi=300)
+if task_number in [1, 2, 3]:
+    plt.savefig(name_p_file, dpi=300)
+else:
+    plt.show()
 
 plt.figure(2)
 plt.plot(x, u_an, 'b', x, u, 'r--')
@@ -172,4 +179,25 @@ plt.grid(which='minor', linestyle=':')
 plt.grid(which='minor', linestyle=':')
 plt.ylim([-0.1, 1.1])
 name_u_file = f'Функция скорости фильтрации (задание {task_number}).png'
-plt.savefig(name_u_file, dpi=300)
+if task_number in [1, 2, 3]:
+    plt.savefig(name_u_file, dpi=300)
+else:
+    plt.show()
+
+# Перерасчет на реальные величины
+L, k, m, dp, mu = 100, 10e-12, 0.2, 10e6, 10e-3
+u0 = k * dp / mu / L
+u_dim = np.array(list(map(lambda x: x * u0, u)))
+u_real = np.array(list(map(lambda x: x / m, u_dim)))
+p1 = p[0] * dp
+p2 = p[N] * dp
+# TODO рассчитать время прохождения галереи
+# T = m * mu / k * L ** 2 / (p1 - p2)
+
+if task_number in [1, 2, 3]:
+    with open(f'results (задание {task_number}).txt', 'w', encoding='utf-8') as file:
+        file.write(f'Невязка при расчете давления: {E}\n')
+        file.write(f'Скорость фильтрации в узлах (безразмерная): {u}\n')
+        file.write(f'Скорость фильтрации в узлах (размерная): {u_dim}\n')
+        file.write(f'Истинная скорость фильтрации в узлах (размерная): {u_real}\n')
+        # file.write(f'Время прохождения частицы между галереями: {T}')
