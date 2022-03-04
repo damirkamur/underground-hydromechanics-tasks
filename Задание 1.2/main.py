@@ -1,12 +1,30 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
+task_number = 1
+
 
 def p_analit_1(x):
     return 1 - x
 
 
 def u_analit_1(x):
+    return 1
+
+
+def p_analit_2(x):
+    return 1 - x
+
+
+def u_analit_2(x):
+    return 1
+
+
+def p_analit_3(x):
+    return 1 - x
+
+
+def u_analit_3(x):
     return 1
 
 
@@ -112,8 +130,17 @@ p_u = np.linalg.solve(A, b)
 p = p_u[:xs]
 u = p_u[xs:]
 
-p_an = [p_analit_1(x[i]) for i in range(xs)]
-u_an = [u_analit_1(x[i]) for i in range(xs)]
+p_an = np.zeros(xs)
+u_an = np.zeros(xs)
+if task_number == 1:
+    p_an = [p_analit_1(x[i]) for i in range(xs)]
+    u_an = [u_analit_1(x[i]) for i in range(xs)]
+elif task_number == 2:
+    p_an = [p_analit_2(x[i]) for i in range(xs)]
+    u_an = [u_analit_2(x[i]) for i in range(xs)]
+elif task_number == 3:
+    p_an = [p_analit_3(x[i]) for i in range(xs)]
+    u_an = [u_analit_3(x[i]) for i in range(xs)]
 
 plt.figure(1)
 plt.plot(x, p_an, 'b', x, p, 'r--')
@@ -126,8 +153,8 @@ plt.ylabel('p')
 plt.minorticks_on()
 plt.grid(which='major', linewidth=1)
 plt.grid(which='minor', linestyle=':')
-# plt.savefig('Функция давления.png', dpi=300)
-plt.show()
+name_p_file = f'Функция давления (задание {task_number}).png'
+plt.savefig(name_p_file, dpi=300)
 
 plt.figure(2)
 plt.plot(x, u_an, 'b', x, u, 'r--')
@@ -140,5 +167,5 @@ plt.ylabel('u')
 plt.minorticks_on()
 plt.grid(which='major', linewidth=1)
 plt.grid(which='minor', linestyle=':')
-# plt.savefig('Функция скорости фильтрации.png', dpi=300)
-plt.show()
+name_u_file = f'Функция скорости фильтрации (задание {task_number}).png'
+plt.savefig(name_u_file, dpi=300)
