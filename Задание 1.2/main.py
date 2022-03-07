@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from math import sqrt
 
-task_number = 3
+task_number = 2
 
 
 def p_analit_1(x):
@@ -192,14 +192,12 @@ u_real = np.array(list(map(lambda x: x / m, u_dim)))
 p1 = p[0] * dp
 p2 = p[N] * dp
 # TODO рассчитать время прохождения галереи
-T = 0
-kol1 = 0
-kol2 = N[0]
+T, points_quantity1, points_quantity2 = 0, 0, 0
 for i in range(zone_coordinates.size - 1):
-    T += m * mu / (k * zone_f[i]) * (zone_lengths[i] * L) ** 2 / (p[kol1] - p[kol2]) / dp
-    if i < zone_coordinates.size - 2:
-        kol1 += kol2
-        kol2 += N[i + 1]
+    points_quantity2 += N[i]
+    T += m * mu / (k * zone_f[i]) * (zone_lengths[i] * L) ** 2 / (p[points_quantity1] - p[points_quantity2]) / dp
+    points_quantity1 += points_quantity2
+
 
 if task_number in [1, 2, 3]:
     with open(f'results (задание {task_number}).txt', 'w', encoding='utf-8') as file:
