@@ -185,14 +185,21 @@ else:
     plt.show()
 
 # Перерасчет на реальные величины
-L, k, m, dp, mu = 100, 10e-12, 0.2, 10e6, 10e-3
+L, k, m, dp, mu = 100, 1e-12, 0.2, 1e6, 1e-3
 u0 = k * dp / mu / L
 u_dim = np.array(list(map(lambda x: x * u0, u)))
 u_real = np.array(list(map(lambda x: x / m, u_dim)))
 p1 = p[0] * dp
 p2 = p[N] * dp
 # TODO рассчитать время прохождения галереи
-# T = m * mu / k * L ** 2 / (p1 - p2)
+T = 0
+kol1 = 0
+kol2 = N[0]
+for i in range(zone_coordinates.size - 1):
+    T += m * mu / (k * zone_f[i]) * (zone_lengths[i] * L) ** 2 / (p[kol1] - p[kol2]) / dp
+    if i < zone_coordinates.size - 2:
+        kol1 += kol2
+        kol2 += N[i + 1]
 
 if task_number in [1, 2, 3]:
     with open(f'results (задание {task_number}).txt', 'w', encoding='utf-8') as file:
@@ -200,4 +207,4 @@ if task_number in [1, 2, 3]:
         file.write(f'Скорость фильтрации в узлах (безразмерная): {u}\n')
         file.write(f'Скорость фильтрации в узлах (размерная): {u_dim}\n')
         file.write(f'Истинная скорость фильтрации в узлах (размерная): {u_real}\n')
-        # file.write(f'Время прохождения частицы между галереями: {T}')
+        file.write(f'Время прохождения частицы между галереями: {T}')

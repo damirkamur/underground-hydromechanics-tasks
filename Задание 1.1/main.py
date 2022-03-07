@@ -85,14 +85,13 @@ plt.ylim([-0.1, 1.1])
 plt.savefig('Функция скорости фильтрации.png', dpi=300)
 
 # Перерасчет на реальные величины
-L, k, m, dp, mu = 100, 10e-12, 0.2, 10e6, 10e-3
+L, k, m, dp, mu = 100, 1e-12, 0.2, 1e6, 1e-3
 u0 = k * dp / mu / L
 u_dim = np.array(list(map(lambda x: x * u0, u)))
 u_real = np.array(list(map(lambda x: x / m, u_dim)))
 p1 = p[0] * dp
 p2 = p[N] * dp
 T = m * mu / k * L ** 2 / (p1 - p2)
-
 with open('results.txt', 'w', encoding='utf-8') as file:
     file.write(f'Невязка при расчете давления: {E}\n')
     file.write(f'Скорость фильтрации в узлах (безразмерная): {u}\n')
