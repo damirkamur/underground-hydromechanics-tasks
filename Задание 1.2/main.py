@@ -198,7 +198,6 @@ for i in range(zone_coordinates.size - 1):
     T += m * mu / (k * zone_f[i]) * (zone_lengths[i] * L) ** 2 / (p[points_quantity1] - p[points_quantity2]) / dp
     points_quantity1 += points_quantity2
 
-
 if task_number in [1, 2, 3]:
     with open(f'results (задание {task_number}).txt', 'w', encoding='utf-8') as file:
         file.write(f'Невязка при расчете давления: {E}\n')
