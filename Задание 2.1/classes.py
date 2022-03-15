@@ -6,7 +6,7 @@ from math import sqrt
 
 
 class Task:
-    def __init__(self, N: int, rw: float):
+    def __init__(self, N: int, rw: float, correction_coef: bool = False):
         if N <= 0 or rw >= 1.0 or rw <= 0:
             raise Exception('Некорректные входные данные')
         self.__N = N
@@ -20,6 +20,7 @@ class Task:
         self.__E = None
         self.__u = None
         self.__u_analit = None
+        self.__correction_coef = correction_coef
 
     def generate_regular_grid(self):
         self.__x = np.linspace(self.rw, 1.0, self.N + 1)
@@ -40,16 +41,23 @@ class Task:
         self.__spaces = np.zeros(self.N)
         for i in range(self.N):
             self.__spaces[i] = self.x[i + 1] - self.x[i]
+        if self.__correction_coef:
+            self.__tetta = np.ones(self.N + 1)
+            for i in range(self.N):
+                self.__tetta[i] = 2 * (self.x[i + 1] - self.x[i]) / (self.x[i + 1] + self.x[i]) / math.log(
+                    self.x[i + 1] / self.x[i])
+        else:
+            self.__tetta = np.ones(self.N + 1)
 
     def make_matrix(self):
         self.__A = np.zeros((self.N + 1, self.N + 1))
         self.__b = np.zeros(self.N + 1)
         for i in range(1, self.N):
             eq_ind = i - 1
-            self.__A[eq_ind][i - 1] = 2 / (self.spaces[i - 1] * (self.spaces[i - 1] + self.spaces[i]))
-            self.__A[eq_ind][i] = -1 / self.x[i] / self.spaces[i] - 2 / self.spaces[i] / self.spaces[i - 1]
-            self.__A[eq_ind][i + 1] = 1 / self.x[i] / self.spaces[i] + 2 / (
-                    self.spaces[i] * (self.spaces[i - 1] + self.spaces[i]))
+            self.__A[eq_ind][i - 1] = -(self.x[i] + self.x[i - 1]) * self.tetta[i - 1] / 2 / self.spaces[i - 1]
+            self.__A[eq_ind][i] = (self.x[i + 1] + self.x[i]) * self.tetta[i] / 2 / self.spaces[i] + (
+                        self.x[i] + self.x[i - 1]) * self.tetta[i - 1] / 2 / self.spaces[i - 1]
+            self.__A[eq_ind][i + 1] = -(self.x[i + 1] + self.x[i]) * self.tetta[i] / 2 / self.spaces[i]
         eq_ind = self.N - 1
         self.__A[eq_ind][0] = 1
         eq_ind += 1
@@ -110,8 +118,8 @@ class Task:
     def solve_u(self):
         self.__u = np.zeros(self.N + 1)
         for i in range(self.N):
-            self.__u[i] = (self.p[i] - self.p[i + 1]) / self.spaces[i]
-        self.__u[self.N] = (self.p[self.N - 1] - self.p[self.N]) / self.spaces[self.N - 1]
+            self.__u[i] = self.tetta[i + 1] * (self.p[i] - self.p[i + 1]) / self.spaces[i]
+        self.__u[self.N] = self.tetta[self.N - 1] * (self.p[self.N - 1] - self.p[self.N]) / self.spaces[self.N - 1]
 
     def show_u(self):
         plt.figure(3)
@@ -186,3 +194,7 @@ class Task:
     @property
     def u_analit(self):
         return self.__u_analit
+
+    @property
+    def tetta(self):
+        return self.__tetta
