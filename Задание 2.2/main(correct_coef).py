@@ -4,7 +4,7 @@ from scipy.sparse import linalg
 from matplotlib import pyplot as plt
 import math
 
-task_number = 3
+task_number = 1
 
 
 def p_analit_1(x):
@@ -15,41 +15,6 @@ def p_analit_1(x):
 def u_analit_1(x):
     global rw
     return 1 / math.log(rw) / x
-
-
-def p_analit_2(x):
-    global rw
-    ksi = 1.0
-    mu = 0.1
-    if x <= 0.5:
-        return mu / (mu * math.log(0.5 / rw) - ksi * math.log(0.5)) * math.log(x / rw)
-    else:
-        return ksi / (mu * math.log(0.5 / rw) - ksi * math.log(0.5)) * math.log(x) + 1
-
-
-def u_analit_2(x):
-    global rw
-    ksi = 1.0
-    mu = 0.1
-    return ksi * mu / (ksi * math.log(0.5) - mu * math.log(0.5 / rw)) / x
-
-
-def p_analit_3(x):
-    # K = 0.0440824
-    global rw
-    ksi = 1.0
-    mu = 0.0440824
-    if x <= 0.75:
-        return mu / (mu * math.log(0.75 / rw) - ksi * math.log(0.75)) * math.log(x / rw)
-    else:
-        return ksi / (mu * math.log(0.75 / rw) - ksi * math.log(0.75)) * math.log(x) + 1
-
-
-def u_analit_3(x):
-    global rw
-    ksi = 1.0
-    mu = 0.0440824
-    return ksi * mu / (ksi * math.log(0.75) - mu * math.log(0.75 / rw)) / x
 
 
 def p_ind(i: int) -> int:
@@ -107,6 +72,7 @@ rw = x[0]
 f = np.array([zone_f[define_zone_num(coord)] for coord in x])
 type_x = np.array(list(map(define_type_x, x)))
 h = np.array([x[i + 1] - x[i] for i in range(xs - 1)])
+tetta = np.array([-h[i] / x[i] / math.log(x[i] / x[i + 1]) for i in range(xs - 1)])
 
 # Массивы для спарс матрицы
 row_ind = list()
@@ -124,7 +90,8 @@ for i in range(xs):
         eq_num += 1
         col_ind.extend([p_ind(i), p_ind(i + 1), p_ind(i - 1)])
         row_ind.extend([eq_num, eq_num, eq_num])
-        data.extend([-1 - 2 * x[i] / h[i], 1 + x[i] / h[i], x[i] / h[i]])
+        data.extend([(x[i] + x[i + 1]) * tetta[i] + (x[i] + x[i - 1]) * tetta[i - 1], -(x[i] + x[i + 1]) * tetta[i],
+                     -(x[i] + x[i - 1]) * tetta[i - 1]])
         eq_num += 1
 
 # Граничные условия для p
@@ -164,18 +131,9 @@ p_u = linalg.spsolve(sA, rhs)
 p = p_u[:xs]
 u = p_u[xs:]
 
-if task_number == 1:
-    p_an = [p_analit_1(x[i]) for i in range(xs)]
-    u_an = [u_analit_1(x[i]) for i in range(xs)]
-elif task_number == 2:
-    p_an = [p_analit_2(x[i]) for i in range(xs)]
-    u_an = [u_analit_2(x[i]) for i in range(xs)]
-elif task_number == 3:
-    p_an = [p_analit_3(x[i]) for i in range(xs)]
-    u_an = [u_analit_3(x[i]) for i in range(xs)]
-else:
-    p_an = np.zeros(xs)
-    u_an = np.zeros(xs)
+p_an = [p_analit_1(x[i]) for i in range(xs)]
+u_an = [u_analit_1(x[i]) for i in range(xs)]
+
 # Расчет невязки
 E = math.sqrt(sum([(p[i] - p_an[i]) ** 2 for i in range(xs)]) / xs)
 
@@ -192,11 +150,9 @@ plt.grid(which='major', linewidth=1)
 plt.grid(which='minor', linestyle=':')
 plt.grid(which='minor', linestyle=':')
 plt.ylim([-0.1, 1.1])
-name_p_file = f'Функция давления (задание {task_number}) N={xs}.png'
-if task_number in [1, 2, 3]:
-    plt.savefig(name_p_file, dpi=300)
-else:
-    plt.show()
+name_p_file = f'Функция давления (задание 1 п.к.) N={xs}.png'
+
+plt.savefig(name_p_file, dpi=300)
 
 plt.figure(2)
 plt.plot(x, u_an, 'b', x, u, 'r--')
@@ -210,27 +166,8 @@ plt.minorticks_on()
 plt.grid(which='major', linewidth=1)
 plt.grid(which='minor', linestyle=':')
 plt.grid(which='minor', linestyle=':')
-name_u_file = f'Функция скорости фильтрации (задание {task_number}) N={xs}.png'
-if task_number in [1, 2, 3]:
-    plt.savefig(name_u_file, dpi=300)
-else:
-    plt.show()
+name_u_file = f'Функция скорости фильтрации (задание 1 п.к.) N={xs}.png'
 
-R, rw, k0, m, dp, mu = 100, 0.1, 1e-12, 0.2, 1e6, 1e-3
+plt.savefig(name_u_file, dpi=300)
 
-if task_number == 1:
-    # T = mu * m * math.log(R / rw) * (R ** 2 - rw ** 2) / 2 / k0 / (p[xs - 1] - p[0]) / dp
-    T = sum([h[i] * h[i] * R * mu * m * (R - rw) / k0 / dp / (p[i + 1] - p[i]) for i in range(xs - 1)])
-elif task_number == 2:
-    # T = mu * m * math.log(0.5 * R / rw) * ((0.5 * R) ** 2 - rw ** 2) / 2 / k0 / (p[N[0]] - p[0]) / dp
-    # T += mu * m * math.log(R / (0.5 * R)) * (R ** 2 - (0.5 * R) ** 2) / 2 / k0 / (p[xs - 1] - p[N[0]]) / dp
-    T = sum([h[i] * h[i] * R * mu * m * (R - rw) / k0 / dp / (p[i + 1] - p[i]) for i in range(xs - 1)])
-elif task_number == 3:
-    # T = mu * m * math.log(0.75 * R / rw) * ((0.75 * R) ** 2 - rw ** 2) / 2 / k0 / (p[N[0]] - p[0]) / dp
-    # T += mu * m * math.log(R / (0.75 * R)) * (R ** 2 - (0.75 * R) ** 2) / 2 / k0 / (p[xs - 1] - p[N[0]]) / dp
-    T = sum([h[i] * h[i] * R * mu * m * (R - rw) / k0 / dp / (p[i + 1] - p[i]) for i in range(xs - 1)])
-
-if task_number in [1, 2, 3]:
-    with open(f'results (задание {task_number}).txt', 'w', encoding='utf-8') as file:
-        file.write(f'Невязка при расчете давления: {E}\n')
-        file.write(f'Время прохождения частицы между галереями: {T}')
+print(E)
