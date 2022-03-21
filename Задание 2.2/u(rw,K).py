@@ -47,7 +47,7 @@ for R in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
         with open('zone_info(u(rw,K))).txt', 'r') as file:
             zone_coordinates = np.array(list(map(float, file.readline().split())))
             zone_f = np.array(list(map(float, file.readline().split())))
-        zone_coordinates[0] = R
+        zone_coordinates[0] /= R
         zone_f[1] = K
         NN = len(zone_coordinates) - 1
         zone_lengths = [zone_coordinates[i + 1] - zone_coordinates[i] for i in range(NN)]

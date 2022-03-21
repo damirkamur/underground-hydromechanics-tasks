@@ -56,7 +56,7 @@ class Task:
             eq_ind = i - 1
             self.__A[eq_ind][i - 1] = -(self.x[i] + self.x[i - 1]) * self.tetta[i - 1] / 2 / self.spaces[i - 1]
             self.__A[eq_ind][i] = (self.x[i + 1] + self.x[i]) * self.tetta[i] / 2 / self.spaces[i] + (
-                        self.x[i] + self.x[i - 1]) * self.tetta[i - 1] / 2 / self.spaces[i - 1]
+                    self.x[i] + self.x[i - 1]) * self.tetta[i - 1] / 2 / self.spaces[i - 1]
             self.__A[eq_ind][i + 1] = -(self.x[i + 1] + self.x[i]) * self.tetta[i] / 2 / self.spaces[i]
         eq_ind = self.N - 1
         self.__A[eq_ind][0] = 1
@@ -118,8 +118,8 @@ class Task:
     def solve_u(self):
         self.__u = np.zeros(self.N + 1)
         for i in range(self.N):
-            self.__u[i] = self.tetta[i + 1] * (self.p[i] - self.p[i + 1]) / self.spaces[i]
-        self.__u[self.N] = self.tetta[self.N - 1] * (self.p[self.N - 1] - self.p[self.N]) / self.spaces[self.N - 1]
+            self.__u[i] = (self.p[i] - self.p[i + 1]) / self.spaces[i]
+        self.__u[self.N] = (self.p[self.N - 1] - self.p[self.N]) / self.spaces[self.N - 1]
 
     def show_u(self):
         plt.figure(3)
