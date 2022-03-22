@@ -20,7 +20,7 @@ Narr = list()
 Eparr = list()
 Euarr = list()
 Farr = list()
-for N in range(100, 101):
+for N in range(1,100,2):
     start = time.time()
     print(N)
 
