@@ -37,17 +37,17 @@ def define_type_x(xx):
 
 
 plt.figure(1)
-for R in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
+for R in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 0.75]:
     print(R)
     u0_arr = list()
-    for K in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
+    for K in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
         print(K, end=' ')
-        N_min = 10000
+        N_min = 1000
         # Кол-во зон и их границы
         with open('zone_info(u(rw,K))).txt', 'r') as file:
             zone_coordinates = np.array(list(map(float, file.readline().split())))
             zone_f = np.array(list(map(float, file.readline().split())))
-        zone_coordinates[0] /= R
+        zone_coordinates[1] = R
         zone_f[1] = K
         NN = len(zone_coordinates) - 1
         zone_lengths = [zone_coordinates[i + 1] - zone_coordinates[i] for i in range(NN)]
@@ -123,8 +123,8 @@ for R in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
         u = p_u[xs:]
         u0_arr.append(u[0])
     print()
-    plt.plot([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], u0_arr)
-plt.legend(('R=0.01', 'R=0.02', 'R=0.05', 'R=0.1', 'R=0.2', 'R=0.5'))
+    plt.plot([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], u0_arr)
+plt.legend(('R=0.01', 'R=0.02', 'R=0.05', 'R=0.1', 'R=0.2', 'R=0.5', 'R=0.75'))
 plt.title('Зависимость дебита скважины от rw и K')
 plt.minorticks_on()
 plt.grid()
