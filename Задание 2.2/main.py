@@ -220,15 +220,18 @@ R, rw, k0, m, dp, mu = 100, 0.1, 1e-12, 0.2, 1e6, 1e-3
 
 if task_number == 1:
     # T = mu * m * math.log(R / rw) * (R ** 2 - rw ** 2) / 2 / k0 / (p[xs - 1] - p[0]) / dp
-    T = sum([h[i] * h[i] * R * mu * m * (R - rw) / k0 / dp / (p[i + 1] - p[i]) for i in range(xs - 1)])
+    # T = sum([h[i] * h[i] * R * mu * m * (R - rw) / k0 / dp / (p[i + 1] - p[i]) for i in range(xs - 1)])
+    T = sum([mu * (R - rw) * m / u[i] / k0 / dp * h[i] * (R - rw) for i in range(xs-1)])
 elif task_number == 2:
     # T = mu * m * math.log(0.5 * R / rw) * ((0.5 * R) ** 2 - rw ** 2) / 2 / k0 / (p[N[0]] - p[0]) / dp
     # T += mu * m * math.log(R / (0.5 * R)) * (R ** 2 - (0.5 * R) ** 2) / 2 / k0 / (p[xs - 1] - p[N[0]]) / dp
-    T = sum([h[i] * h[i] * R * mu * m * (R - rw) / k0 / dp / (p[i + 1] - p[i]) for i in range(xs - 1)])
+    # T = sum([h[i] * h[i] * R * mu * m * (R - rw) / k0 / dp / (p[i + 1] - p[i]) for i in range(xs - 1)])
+    T = sum([mu * (R - rw) * m / u[i] / k0 / dp * h[i] * (R - rw) for i in range(xs-1)])
 elif task_number == 3:
     # T = mu * m * math.log(0.75 * R / rw) * ((0.75 * R) ** 2 - rw ** 2) / 2 / k0 / (p[N[0]] - p[0]) / dp
     # T += mu * m * math.log(R / (0.75 * R)) * (R ** 2 - (0.75 * R) ** 2) / 2 / k0 / (p[xs - 1] - p[N[0]]) / dp
-    T = sum([h[i] * h[i] * R * mu * m * (R - rw) / k0 / dp / (p[i + 1] - p[i]) for i in range(xs - 1)])
+    # T = sum([h[i] * h[i] * R * mu * m * (R - rw) / k0 / dp / (p[i + 1] - p[i]) for i in range(xs - 1)])
+    T = sum([mu * (R - rw) * m / u[i] / k0 / dp * h[i] * (R - rw) for i in range(xs-1)])
 
 if task_number in [1, 2, 3]:
     with open(f'results (задание {task_number}).txt', 'w', encoding='utf-8') as file:
